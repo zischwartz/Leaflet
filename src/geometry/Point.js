@@ -34,7 +34,12 @@ L.Point.prototype = {
 	},
 
 	multiplyBy: function (num) {
-		return new L.Point(this.x * num, this.y * num);
+        if (typeof num === 'number') {
+            return new L.Point(this.x * num, this.y * num);
+        }
+        else {
+            return new L.Point(this.x * num.x, this.y * num.y);
+        }
 	},
 
 	distanceTo: function (point) {
