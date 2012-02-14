@@ -13,7 +13,7 @@
 		webkit: webkit,
 		webkit3d: webkit && ('WebKitCSSMatrix' in window) && ('m11' in new window.WebKitCSSMatrix()),
 
-		gecko: ua.indexOf("gecko") !== -1,
+		gecko: false, // ua.indexOf("gecko") !== -1,
 
 		opera: opera,
 
