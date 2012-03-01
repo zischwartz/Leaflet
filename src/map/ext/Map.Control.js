@@ -1,10 +1,12 @@
 L.Map.include({
 	addControl: function (control) {
-		control.onAdd(this);
+		var container = control.onAdd(this);
+
+		control._container = container;
+		control._map = this;
 
 		var pos = control.getPosition(),
-			corner = this._controlCorners[pos],
-			container = control.getContainer();
+			corner = this._controlCorners[pos];
 
 		L.DomUtil.addClass(container, 'leaflet-control');
 
@@ -18,10 +20,10 @@ L.Map.include({
 
 	removeControl: function (control) {
 		var pos = control.getPosition(),
-			corner = this._controlCorners[pos],
-			container = control.getContainer();
+			corner = this._controlCorners[pos];
 
-		corner.removeChild(container);
+		corner.removeChild(control._container);
+		control._map = null;
 
 		if (control.onRemove) {
 			control.onRemove(this);
@@ -30,21 +32,17 @@ L.Map.include({
 	},
 
 	_initControlPos: function () {
-		var corners = this._controlCorners = {},
-			classPart = 'leaflet-',
-			top = classPart + 'top',
-			bottom = classPart + 'bottom',
-			left = classPart + 'left',
-			right = classPart + 'right',
-			controlContainer = L.DomUtil.create('div', classPart + 'control-container', this._container);
+		var top = 'leaflet-top',
+			bottom = 'leaflet-bottom',
+			left = 'leaflet-left',
+			right = 'leaflet-right',
+			corner = 'leaflet-corner',
+			container = this._container,
+			corners = this._controlCorners = {};
 
-		if (L.Browser.touch) {
-			controlContainer.className += ' ' + classPart + 'big-buttons';
-		}
-
-		corners.topLeft = L.DomUtil.create('div', top + ' ' + left, controlContainer);
-		corners.topRight = L.DomUtil.create('div', top + ' ' + right, controlContainer);
-		corners.bottomLeft = L.DomUtil.create('div', bottom + ' ' + left, controlContainer);
-		corners.bottomRight = L.DomUtil.create('div', bottom + ' ' + right, controlContainer);
+		corners.topleft = L.DomUtil.create('div', [corner, top, left].join(' '),  container);
+		corners.topright = L.DomUtil.create('div', [corner, top, right].join(' '), container);
+		corners.bottomleft = L.DomUtil.create('div', [corner, bottom, left].join(' '),  container);
+		corners.bottomright = L.DomUtil.create('div', [corner, bottom, right].join(' '), container);
 	}
 });
